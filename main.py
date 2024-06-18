@@ -1,7 +1,7 @@
 import requests
 
 symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol', 'matic-network', 'internet-computer', 'litecoin',
-           'multi-collateral-dai', 'uniswap', 'aptos', 'hedera-hashgraph', 'ethereum-classic', 'crypto-com-cro', 'cosmos', 'stellar', 'filecoin', 'blockstack', 'mantlexyz', 'render-token', 'okb', 'immutable-x', 'renzo-eth', 'pepe', 'arbitrum', 'optimism', 'sui', 'dogwifcoin', 'kaspa', 'vechainthor', 'bittensor','maker', 'rhena-usde', 'the-graph', 'monero', 'injective-protocol', 'fetch-ai', 'theta-token', 'arweave', 'fantom', 'celestia', 'lido-dao','core-dao', 
+           'uniswap', 'aptos', 'hedera-hashgraph', 'ethereum-classic', 'crypto-com-cro', 'cosmos', 'stellar', 'filecoin', 'blockstack', 'mantlexyz', 'render-token', 'okb', 'immutable-x', 'renzo-eth', 'pepe', 'arbitrum', 'optimism', 'sui', 'dogwifcoin', 'kaspa', 'vechainthor', 'bittensor','maker', 'rhena-usde', 'the-graph', 'monero', 'injective-protocol', 'fetch-ai', 'theta-token', 'arweave', 'fantom', 'celestia', 'lido-dao','core-dao', 
            'thor-chain', 'bitget-token', 'bonk-new', 'floki', 'algorand', 'quant', 'sei-network',
            'gala', 'jupiter-stattion', 'flow', 'onbeam', 'wormhole', 'voyager-token','aave', 'bitcoin-sv', 'neo', 'ethena', 'flare', 'bittorrent-new',
            'ondo-finance', 'ribbon-finance', 'singularitynet', 'elrond-gold', 'd-yd-x-native', 'chiliz', 'axie-infinity', 'gatechain-token', 'sandbox',
