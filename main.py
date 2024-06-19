@@ -1,4 +1,5 @@
 import requests
+import time
 
 symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol', 'matic-network', 'internet-computer', 'litecoin',
            'uniswap', 'aptos', 'hedera-hashgraph', 'ethereum-classic', 'crypto-com-cro', 'cosmos', 'stellar', 'filecoin', 'blockstack', 'mantlexyz', 'render-token', 'okb', 'immutable-x', 'renzo-eth', 'pepe', 'arbitrum', 'optimism', 'sui', 'dogwifcoin', 'kaspa', 'vechainthor', 'bittensor','maker', 'rhena-usde', 'the-graph', 'monero', 'injective-protocol', 'fetch-ai', 'theta-token', 'arweave', 'fantom', 'celestia', 'lido-dao','core-dao', 
@@ -12,51 +13,53 @@ symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 
            'siacoin', 'celo', 'ravencoin', 'ethereumpow', 'rocket-pool', 'terra-2', 'project-galaxy',
            'safepal', 'qtum', 'raydium', 'compound', 'zetachain', 'polymesh', 'casper', 'basic-attention-token', 'jito-labs', 'binaryx-new']
 
-for symbol in symbols:
-    url = f'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug={symbol}&start=1&quoteCurrencyId=825&limit=100&category=perpetual&centerType=all&sort=cmc_rank_advanced&direction=desc&spotUntracked=true'
+while True:
+    time.sleep(100)
+    for symbol in symbols:
+        url = f'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug={symbol}&start=1&quoteCurrencyId=825&limit=100&category=perpetual&centerType=all&sort=cmc_rank_advanced&direction=desc&spotUntracked=true'
 
-    print(symbol)
-    response = requests.get(url).json()
+        print(symbol)
+        response = requests.get(url).json()
 
-    comission_dict = {'Binance': 0.07, 'Bybit': 0.05, 'MEXC': 0.05, 'KuCoin': 0.07}
+        comission_dict = {'Binance': 0.07, 'Bybit': 0.05, 'MEXC': 0.05, 'KuCoin': 0.07}
 
-    if "data" in response:
-        market_pairs = response["data"]["marketPairs"]
-        filtered_pairs = [pair for pair in market_pairs if pair["exchangeName"] in ["Binance", "Bybit", "MEXC", "KuCoin"]]
+        if "data" in response:
+            market_pairs = response["data"]["marketPairs"]
+            filtered_pairs = [pair for pair in market_pairs if pair["exchangeName"] in ["Binance", "Bybit", "MEXC", "KuCoin"]]
 
-        funding_rates = {}
+            funding_rates = {}
 
-        for pair in filtered_pairs:
-            exchange_name = pair.get('exchangeName', 'N/A')
-            funding_rate = pair.get('fundingRate', 'N/A') * 100
-            spot_price = pair.get('indexPrice', 'N/A')
-            futures_price = pair.get('price', 'N/A')
-            futures_url = pair.get('marketUrl', 'N/A')
+            for pair in filtered_pairs:
+                exchange_name = pair.get('exchangeName', 'N/A')
+                funding_rate = pair.get('fundingRate', 'N/A') * 100
+                spot_price = pair.get('indexPrice', 'N/A')
+                futures_price = pair.get('price', 'N/A')
+                futures_url = pair.get('marketUrl', 'N/A')
 
-            funding_rates[exchange_name] = (funding_rate, spot_price, futures_price, futures_url)
+                funding_rates[exchange_name] = (funding_rate, spot_price, futures_price, futures_url)
 
-        for exchange1, (rate1, spot1, futures1, url1) in funding_rates.items():
-            for exchange2, (rate2, spot2, futures2, url2) in funding_rates.items():
-                if exchange1 != exchange2:
-                    diff = rate1 - rate2
-                    if diff < -0.1 or diff > 0.1:
-                        curse_spread = ((futures1 - futures2) / futures2) * 100
-                        print(f"{symbol} \n\n\
-{url1} \n\
-{exchange1} : {rate1} \n\
-Spot : {spot1} \n\
-Fut : {futures1}\n\
-Commission : {comission_dict[exchange1]}\n\
-\n\
-{url2} \n\
-{exchange2} : {rate2} \n\
-Spot : {spot2} \n\
-Fut : {futures2}\n\
-Commission : {comission_dict[exchange2]}\n\
-\n\
-Difference : {diff:.4f}%\n\
-Time : 8H \n\
-Curse spread : {curse_spread}%")    
+            for exchange1, (rate1, spot1, futures1, url1) in funding_rates.items():
+                for exchange2, (rate2, spot2, futures2, url2) in funding_rates.items():
+                    if exchange1 != exchange2:
+                        diff = rate1 - rate2
+                        if diff < -0.1 or diff > 0.1:
+                            curse_spread = ((futures1 - futures2) / futures2) * 100
+                            print(f"{symbol} \n\n\
+    {url1} \n\
+    {exchange1} : {rate1} \n\
+    Spot : {spot1} \n\
+    Fut : {futures1}\n\
+    Commission : {comission_dict[exchange1]}\n\
+    \n\
+    {url2} \n\
+    {exchange2} : {rate2} \n\
+    Spot : {spot2} \n\
+    Fut : {futures2}\n\
+    Commission : {comission_dict[exchange2]}\n\
+    \n\
+    Difference : {diff:.4f}%\n\
+    Time : 8H \n\
+    Curse spread : {curse_spread}%")    
 
-    else:
-        print(f"No data found for symbol {symbol}.")
+        else:
+            print(f"No data found for symbol {symbol}.")
