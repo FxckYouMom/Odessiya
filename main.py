@@ -1,6 +1,16 @@
 import requests
 import time
 
+def send_telegram_message(text):
+    bot_token = '6346370947:AAFpePtGV60tX2PEv0rV0RK45h_VZcybx94'
+    chat_id = '-1001795323643'
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&text={text}"
+    
+    response = requests.get(url)
+    data = response.json()
+    print(data)
+
+
 symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol', 'matic-network', 'internet-computer', 'litecoin',
            'uniswap', 'aptos', 'hedera-hashgraph', 'ethereum-classic', 'crypto-com-cro', 'cosmos', 'stellar', 'filecoin', 'blockstack', 'mantlexyz', 'render-token', 'okb', 'immutable-x', 'renzo-eth', 'pepe', 'arbitrum', 'optimism', 'sui', 'dogwifcoin', 'kaspa', 'vechainthor', 'bittensor','maker', 'rhena-usde', 'the-graph', 'monero', 'injective-protocol', 'fetch-ai', 'theta-token', 'arweave', 'fantom', 'celestia', 'lido-dao','core-dao', 
            'thor-chain', 'bitget-token', 'bonk-new', 'floki', 'algorand', 'quant', 'sei-network',
@@ -14,7 +24,7 @@ symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 
            'safepal', 'qtum', 'raydium', 'compound', 'zetachain', 'polymesh', 'casper', 'basic-attention-token', 'jito-labs', 'binaryx-new']
 
 while True:
-    time.sleep(100)
+    time.sleep(10)
     for symbol in symbols:
         url = f'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug={symbol}&start=1&quoteCurrencyId=825&limit=100&category=perpetual&centerType=all&sort=cmc_rank_advanced&direction=desc&spotUntracked=true'
 
@@ -23,7 +33,7 @@ while True:
 
         comission_dict = {'Binance': 0.07, 'Bybit': 0.05, 'MEXC': 0.05, 'KuCoin': 0.07}
 
-        if "data" in response:
+        try:
             market_pairs = response["data"]["marketPairs"]
             filtered_pairs = [pair for pair in market_pairs if pair["exchangeName"] in ["Binance", "Bybit", "MEXC", "KuCoin"]]
 
@@ -44,22 +54,22 @@ while True:
                         diff = rate1 - rate2
                         if diff < -0.1 or diff > 0.1:
                             curse_spread = ((futures1 - futures2) / futures2) * 100
-                            print(f"{symbol} \n\n\
-    {url1} \n\
-    {exchange1} : {rate1} \n\
-    Spot : {spot1} \n\
-    Fut : {futures1}\n\
-    Commission : {comission_dict[exchange1]}\n\
-    \n\
-    {url2} \n\
-    {exchange2} : {rate2} \n\
-    Spot : {spot2} \n\
-    Fut : {futures2}\n\
-    Commission : {comission_dict[exchange2]}\n\
-    \n\
-    Difference : {diff:.4f}%\n\
-    Time : 8H \n\
-    Curse spread : {curse_spread}%")    
+                            send_telegram_message(f"{symbol} \n\n\
+{url1} \n\
+{exchange1} : {rate1} \n\
+Spot : {spot1} \n\
+Fut : {futures1}\n\
+Commission : {comission_dict[exchange1]}\n\
+\n\
+{url2} \n\
+{exchange2} : {rate2} \n\
+Spot : {spot2} \n\
+Fut : {futures2}\n\
+Commission : {comission_dict[exchange2]}\n\
+\n\
+Difference : {diff:.4f}%\n\
+Time : 8H \n\
+Curse spread : {curse_spread}%")    
 
-        else:
+        except KeyError:
             print(f"No data found for symbol {symbol}.")
