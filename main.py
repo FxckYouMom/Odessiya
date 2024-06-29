@@ -31,9 +31,9 @@ symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin',
         'polymesh', 'casper', 'basic-attention-token', 'jito', 'binaryx-new']
 
 while True:
-    time.sleep(0.01)
+    time.sleep(600)
     for symbol in symbols:
-        time.sleep(0.01)
+        time.sleep(0.5)
         url = f'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug={symbol}&start=1&quoteCurrencyId=825&limit=100&category=perpetual&centerType=all&sort=cmc_rank_advanced&direction=desc&spotUntracked=true'
 
         print(symbol)
