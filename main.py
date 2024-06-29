@@ -11,20 +11,27 @@ def send_telegram_message(text):
     print(data)
 
 
-symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin', 'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol', 'poligon', 'internet-computer', 'litecoin',
-           'uniswap', 'aptos', 'hedera', 'ethereum-classic', 'cronos', 'cosmos', 'stellar', 'filecoin', 'stack', 'mantle', 'render-token', 'okb', 'immutable-x', 'renzo-restaked-eth', 'pepe', 'arbitrum', 'optimism-ethereum', 'sui', 'dogwifhat', 'kaspa', 'vethor-token', 'bittensor','maker', 'ethena-usde', 'the-graph', 'monero', 'fetch', 'theta-token', 'arweave', 'fantom', 'celestia', 'lido-dao','core-dao', 
-           'thorchain', 'bitget-token-new', 'bonk1', 'floki-inu', 'algorand', 'quant', 'sei',
-           'gala', 'jupiter-ag', 'flow', 'onbeam', 'wormhole', 'vgx-token','aave', 'bitcoin-sv', 'neo', 'ethena', 'flare', 'bittorrent-new',
-           'ondo-finance', 'ribbon-finance', 'singularitynet', 'elrond-gold', 'd-yd-x-native', 'chiliz', 'axie-infinity', 'gatetoken', 'the-sandbox',
-           'starknet-token', 'akash-network', 'kucoin-token', 'tezos', 'ecash', 'eos', 'mina', 'worldcoin-org',
-           'synthetix', 'conflux-network', 'ronin', 'helium', 'safe1','decentraland', 'jasmy', 'pyth-network', 'kelp-dao-restaked-eth', 'apecoin-ape','axelar', 'sats-ordinals', 'nervos-network', 'iota', 'kava', 'dexe',  
-           'pancakeswap', 'tether-gold', 'luna', 'osmosis', 'wemix', 'venom', 'dymension', 'mantra-dao', 'sats-ordinals', 'astar', 'wootrade','ocean-protocol', 'curve-dao-token', 'iotex', 'frax-staked-ether', 'radix-protocol', 'altlayer', 'mx-token', 
-           'ethereum-name-service', 'ankr', 'popcat-sol', '1inch', 'aerodrome-finance', 'amp', 'pax-gold', 'trust-wallet-token', 'zilliqa', 'enjin-coin', 'manta-network', 'stepn', 'pendle', 'holo', 'arkham', 'memecoin', 'super-farm', 'skale', 'livepeer', 
-           'siacoin', 'celo', 'ravencoin', 'ethereum-pow', 'rocket-pool', 'terra-luna-v2', 'galxe',
-           'safepal', 'qtum', 'raydium', 'compound', 'zetachain', 'polymesh', 'casper', 'basic-attention-token', 'jito', 'binaryx-new']
+
+
+symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin',
+        'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol',
+        'internet-computer', 'litecoin', 'uniswap', 'aptos', 'hedera', 'ethereum-classic', 'cronos', 'cosmos', 'stellar',
+        'filecoin','mantle', 'okb', 'immutable-x', 'pepe', 'arbitrum', 'optimism-ethereum', 'sui', 'dogwifhat', 'kaspa', 
+        'vethor-token', 'bittensor','maker', 'the-graph', 'monero', 'fetch', 'arweave', 'fantom', 'celestia', 'lido-dao',
+        'core-dao', 'thorchain', 'bonk1', 'floki-inu', 'algorand', 'quant', 'sei', 'gala', 'jupiter-ag', 'flow', 'onbeam', 
+        'wormhole', 'vgx-token','aave', 'bitcoin-sv', 'neo', 'ethena', 'flare', 'bittorrent-new', 'ondo-finance', 
+        'singularitynet', 'chiliz', 'axie-infinity', 'gatetoken', 'the-sandbox', 'starknet-token', 'akash-network', 
+        'tezos', 'ecash', 'eos', 'mina', 'worldcoin-org', 'synthetix', 'conflux-network', 'ronin', 'helium', 'safe1',
+        'decentraland', 'jasmy', 'pyth-network', 'apecoin-ape','axelar', 'sats-ordinals', 'nervos-network', 'iota', 
+        'kava', 'dexe', 'pancakeswap', 'tether-gold', 'osmosis', 'wemix', 'venom', 'dymension', 'astar', 'wootrade',
+        'ocean-protocol', 'curve-dao-token', 'iotex', 'radix-protocol', 'altlayer', 'ethereum-name-service', 'ankr', 
+        'popcat-sol', '1inch', 'aerodrome-finance', 'amp', 'pax-gold', 'trust-wallet-token', 'zilliqa', 'enjin-coin',
+        'manta-network', 'pendle', 'holo', 'arkham', 'memecoin', 'livepeer', 'siacoin', 'celo', 'ravencoin', 
+        'ethereum-pow', 'rocket-pool', 'terra-luna-v2', 'galxe', 'safepal', 'qtum', 'raydium', 'compound', 'zetachain',
+        'polymesh', 'casper', 'basic-attention-token', 'jito', 'binaryx-new']
 
 while True:
-    time.sleep(1200)
+    time.sleep(0.01)
     for symbol in symbols:
         time.sleep(0.01)
         url = f'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/market-pairs/latest?slug={symbol}&start=1&quoteCurrencyId=825&limit=100&category=perpetual&centerType=all&sort=cmc_rank_advanced&direction=desc&spotUntracked=true'
@@ -73,4 +80,4 @@ Time : 8H \n\
 Curse spread : {curse_spread}%")    
 
         except KeyError:
-            send_telegram_message(f"!!!!! No Data -> {symbol} <-")
+            send_telegram_message(f"{symbol}")
