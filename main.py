@@ -13,7 +13,7 @@ def send_telegram_message(text):
 
 
 
-symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin',
+symbols = ['bitcoin', 'ethereum','bnb', 'solana', 'xrp', 'dogecoin',
         'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol',
         'internet-computer', 'litecoin', 'uniswap', 'aptos', 'hedera', 'ethereum-classic', 'cronos', 'cosmos', 'stellar',
         'filecoin','mantle', 'okb', 'immutable-x', 'pepe', 'arbitrum', 'optimism-ethereum', 'sui', 'dogwifhat', 'kaspa', 
@@ -26,7 +26,7 @@ symbols = ['bitcoin', 'ethereum', 'tether', 'bnb', 'solana', 'xrp', 'dogecoin',
         'kava', 'dexe', 'pancakeswap', 'tether-gold', 'osmosis', 'wemix', 'venom', 'dymension', 'astar', 'wootrade',
         'ocean-protocol', 'curve-dao-token', 'iotex', 'radix-protocol', 'altlayer', 'ethereum-name-service', 'ankr', 
         'popcat-sol', '1inch', 'aerodrome-finance', 'amp', 'pax-gold', 'trust-wallet-token', 'zilliqa', 'enjin-coin',
-        'manta-network', 'pendle', 'holo', 'arkham', 'memecoin', 'livepeer', 'siacoin', 'celo', 'ravencoin', 
+        'manta-network', 'pendle', 'holo', 'arkham', 'livepeer', 'siacoin', 'celo', 'ravencoin', 
         'ethereum-pow', 'rocket-pool', 'terra-luna-v2', 'galxe', 'safepal', 'qtum', 'raydium', 'compound', 'zetachain',
         'polymesh', 'casper', 'basic-attention-token', 'jito', 'binaryx-new']
 
