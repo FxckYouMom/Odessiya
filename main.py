@@ -11,7 +11,7 @@ def send_telegram_message(text):
     print(data)
 
 
-
+send_telegram_message(f"Bot Start")
 
 symbols = ['bitcoin', 'ethereum','bnb', 'solana', 'xrp', 'dogecoin',
         'toncoin', 'cardano', 'shiba-inu', 'avalanche', 'tron', 'polkadot-new', 'bitcoin-cash', 'chainlink', 'near-protocol',
@@ -80,4 +80,4 @@ Time : 8H \n\
 Curse spread : {curse_spread}%")    
 
         except KeyError:
-            send_telegram_message(f"{symbol}")
+            send_telegram_message(f"!!! Error in {symbol}")
