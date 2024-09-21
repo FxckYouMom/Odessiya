@@ -7,7 +7,7 @@ import json  # Added this import
 
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
-    chat_id = '-4595866137'
+    chat_id = '-1002452439427'
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     
     payload = {
