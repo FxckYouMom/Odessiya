@@ -5,6 +5,8 @@ import time
 from fake_useragent import UserAgent
 import json  # Added this import
 
+print("hi huesos")
+
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
     chat_id = '-1002452439427'
