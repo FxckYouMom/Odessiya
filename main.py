@@ -5,6 +5,9 @@ import time
 from fake_useragent import UserAgent
 import json
 
+# Global list to track sent item IDs
+sent_ids = []
+
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
     chat_id = '-1002452439427'
@@ -18,7 +21,7 @@ def send_telegram_message(text):
     
     response = requests.get(url, params=payload)
     try:
-        pass  # Ignoring response for now
+        pass
     except ValueError:
         print("Error in response")
 
@@ -64,10 +67,11 @@ def extract_data(g_rgAssets):
                     extracted_data.append(item_info)
     return extracted_data
 
-def send_super_list_telegram(super_list, processed_ids):
+def send_super_list_telegram(super_list):
+    global sent_ids  # Access the global variable
     for item in super_list:
-        # If the item ID has already been processed, skip it
-        if item['id'] in processed_ids:
+        if item['id'] in sent_ids:
+            # Skip sending the message if the item has already been processed
             continue
 
         # Encode the market name for the URL
@@ -88,14 +92,51 @@ def send_super_list_telegram(super_list, processed_ids):
         )
 
         send_telegram_message(message)
-        processed_ids.add(item['id'])  # Add the ID to the processed list
+
+        # Add the item ID to the sent list
+        sent_ids.append(item['id'])
+
+        # Clear the list if it grows too large
+        if len(sent_ids) > 1000:
+            sent_ids.clear()
+
         time.sleep(2)  # To prevent spamming requests
 
 def main():
     ua = UserAgent()
     urls = [
-        # Add your URLs here...
-    ]
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Factory%20New%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Torque%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Minimal%20Wear%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Minimal%20Wear%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Factory%20New%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Tuxedo%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Well-Worn%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Minimal%20Wear%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Battle-Scarred%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Field-Tested%29?filter=Sticker%3A",
+    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A"
+]
     
     specific_stickers = [ 
         "Sticker: (gold)", "Sticker:  (Lenticular)",
@@ -106,7 +147,6 @@ def main():
     ]  
 
     super_list = []
-    processed_ids = set()  # Set to track processed item IDs
 
     for url in urls:
         headers = {
@@ -126,14 +166,9 @@ def main():
                         super_list.append(item)
                         break
 
-        # Check if the processed_ids set exceeds 1000 items, then clear it
-        if len(processed_ids) > 1000:
-            processed_ids.clear()
+    send_super_list_telegram(super_list)
 
-    send_super_list_telegram(super_list, processed_ids)
-
-
-send_telegram_message("b")
+send_telegram_message("oj")
 if __name__ == "__main__":
     while True:
         main()
