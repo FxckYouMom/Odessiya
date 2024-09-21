@@ -5,9 +5,6 @@ import time
 from fake_useragent import UserAgent
 import json
 
-# Global list to track sent item IDs
-sent_ids = []
-
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
     chat_id = '-1002452439427'
@@ -21,7 +18,7 @@ def send_telegram_message(text):
     
     response = requests.get(url, params=payload)
     try:
-        pass
+        pass  # Handle or log response if needed
     except ValueError:
         print("Error in response")
 
@@ -67,18 +64,18 @@ def extract_data(g_rgAssets):
                     extracted_data.append(item_info)
     return extracted_data
 
+sent_ids = []
+
 def send_super_list_telegram(super_list):
-    global sent_ids  # Access the global variable
+    global sent_ids
+    
     for item in super_list:
         if item['id'] in sent_ids:
-            # Skip sending the message if the item has already been processed
-            continue
+            continue  # Skip duplicate item
 
-        # Encode the market name for the URL
         market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
         market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
 
-        # Create a numbered list of stickers
         stickers_message = "\n".join(
             [f"{i + 1}. [{name}]({url})" for i, (name, url) in enumerate(zip(item['sticker_names'], item['stickers']))]
         ) if item['stickers'] else 'No stickers'
@@ -92,20 +89,16 @@ def send_super_list_telegram(super_list):
         )
 
         send_telegram_message(message)
-
-        # Add the item ID to the sent list
+        
         sent_ids.append(item['id'])
 
-        # Clear the list if it grows too large
         if len(sent_ids) > 1000:
-            sent_ids.clear()
-
-        time.sleep(2)  # To prevent spamming requests
+            sent_ids = []
+        
+        time.sleep(1)
 
 def main():
     ua = UserAgent()
-
-
     urls = [
     "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Battle-Scarred%29?filter=Sticker%3A",
     "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Field-Tested%29?filter=Sticker%3A",
@@ -140,7 +133,6 @@ def main():
     "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A"
 ]
 
-   
     
     specific_stickers = [ 
         "Sticker: (gold)", "Sticker:  (Lenticular)",
@@ -153,9 +145,7 @@ def main():
     super_list = []
 
     for url in urls:
-        headers = {
-            'User-Agent': ua.random
-        }
+        headers = {'User-Agent': ua.random}
         time.sleep(1)
         page_content = fetch_page(url, headers)
         soup = BeautifulSoup(page_content, 'html.parser')
@@ -172,7 +162,6 @@ def main():
 
     send_super_list_telegram(super_list)
 
-send_telegram_message("bot start2")
 if __name__ == "__main__":
     while True:
         main()
