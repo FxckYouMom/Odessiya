@@ -6,7 +6,6 @@ from fake_useragent import UserAgent
 import json  # Added this import
 
 print("hi huesos")
-send_telegram_message("Bot Start")
 
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
@@ -169,6 +168,7 @@ def main():
 
     send_super_list_telegram(super_list)
 
+send_telegram_message("Bot Start")
 if __name__ == "__main__":
     while True:
         main()
