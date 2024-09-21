@@ -3,11 +3,11 @@ from bs4 import BeautifulSoup
 import re
 import time
 from fake_useragent import UserAgent
-import json
+import json  # Added this import
 
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
-    chat_id = '-1002452439427'
+    chat_id = '-4595866137'
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     
     payload = {
@@ -18,7 +18,8 @@ def send_telegram_message(text):
     
     response = requests.get(url, params=payload)
     try:
-        pass  # Handle or log response if needed
+       # print(response.json()) 
+        pass 
     except ValueError:
         print("Error in response")
 
@@ -64,18 +65,13 @@ def extract_data(g_rgAssets):
                     extracted_data.append(item_info)
     return extracted_data
 
-sent_ids = []
-
 def send_super_list_telegram(super_list):
-    global sent_ids
-    
     for item in super_list:
-        if item['id'] in sent_ids:
-            continue  # Skip duplicate item
-
+        # Encode the market name for the URL
         market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
         market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
 
+        # Create a numbered list of stickers
         stickers_message = "\n".join(
             [f"{i + 1}. [{name}]({url})" for i, (name, url) in enumerate(zip(item['sticker_names'], item['stickers']))]
         ) if item['stickers'] else 'No stickers'
@@ -89,13 +85,9 @@ def send_super_list_telegram(super_list):
         )
 
         send_telegram_message(message)
-        
-        sent_ids.append(item['id'])
+        time.sleep(2)  # To prevent spamming requests
 
-        if len(sent_ids) > 1000:
-            sent_ids = []
-        
-        time.sleep(1)
+
 
 def main():
     ua = UserAgent()
@@ -145,7 +137,9 @@ def main():
     super_list = []
 
     for url in urls:
-        headers = {'User-Agent': ua.random}
+        headers = {
+            'User-Agent': ua.random
+        }
         time.sleep(1)
         page_content = fetch_page(url, headers)
         soup = BeautifulSoup(page_content, 'html.parser')
@@ -153,12 +147,22 @@ def main():
         g_rgAssets = extract_g_rgAssets(soup)
         if g_rgAssets:
             extracted_data = extract_data(g_rgAssets)
+            #print(f"Data extracted from {url}")
 
             for item in extracted_data:
                 for sticker_name in item['sticker_names']:
                     if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
                         super_list.append(item)
                         break
+
+        else:
+            #print(f"Failed to extract g_rgAssets from {url}.")
+            pass
+
+    print("Super list items:")
+    for item in super_list:
+        #print(item)
+        pass
 
     send_super_list_telegram(super_list)
 
