@@ -38,25 +38,9 @@ def extract_g_rgAssets(soup):
                 return json.loads(match.group(1))
     return None
 
-def fetch_sticker_price(sticker_name):
-    # Encode the sticker name for the URL
-    market_name_encoded = sticker_name.replace(' ', '%20').replace('|', '%7C')
-    url = f"https://steamcommunity.com/market/priceoverview/?appid=730&currency=18&market_hash_name=Sticker%20%7C%20{market_name_encoded}"
-    
-    try:
-        response = requests.get(url).json()
-        if response.get('success'):
-            return response.get('lowest_price', 'N/A')  # Return 'N/A' if no price is available
-    except Exception as e:
-        #print(f"Error fetching price for {sticker_name}: {e}")
-        pass
-    
-    return 'N/A'
-
 def extract_sticker_info(item):
     stickers = []
     sticker_names = []
-    sticker_prices = []
     for desc in item.get("descriptions", []):
         if 'sticker_info' in desc.get("value", ""):
             sticker_urls = re.findall(r'src="([^"]+)"', desc["value"])
@@ -64,11 +48,7 @@ def extract_sticker_info(item):
             if sticker_names:
                 stickers = sticker_urls
                 sticker_names = sticker_names[0].split(', ')
-                
-                # Fetch prices for each sticker
-                sticker_prices = [fetch_sticker_price(name) for name in sticker_names]
-                
-    return stickers, sticker_names, sticker_prices
+    return stickers, sticker_names
 
 def extract_data(g_rgAssets):
     extracted_data = []
@@ -81,10 +61,9 @@ def extract_data(g_rgAssets):
                         "market_name": item.get("market_name", ""),
                         "type": item.get("type", ""),
                         "stickers": [],
-                        "sticker_names": [],
-                        "sticker_prices": []
+                        "sticker_names": []
                     }
-                    item_info["stickers"], item_info["sticker_names"], item_info["sticker_prices"] = extract_sticker_info(item)
+                    item_info["stickers"], item_info["sticker_names"] = extract_sticker_info(item)
                     extracted_data.append(item_info)
     return extracted_data
 
@@ -92,15 +71,16 @@ def send_super_list_telegram(super_list):
     global sent_ids  # Access the global variable
     for item in super_list:
         if item['id'] in sent_ids:
-            continue  # Skip sending the message if the item has already been processed
+            # Skip sending the message if the item has already been processed
+            continue
 
         # Encode the market name for the URL
         market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
         market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
 
-        # Create a numbered list of stickers with prices
+        # Create a numbered list of stickers
         stickers_message = "\n".join(
-            [f"{i + 1}. [{name}]({url}) - {price}" for i, (name, url, price) in enumerate(zip(item['sticker_names'], item['stickers'], item['sticker_prices']))]
+            [f"{i + 1}. [{name}]({url})" for i, (name, url) in enumerate(zip(item['sticker_names'], item['stickers']))]
         ) if item['stickers'] else 'No stickers'
 
         message = (
@@ -124,6 +104,7 @@ def send_super_list_telegram(super_list):
 
 def main():
     ua = UserAgent()
+
 
     urls = [
     "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Battle-Scarred%29?filter=Sticker%3A",
@@ -158,6 +139,8 @@ def main():
     "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Field-Tested%29?filter=Sticker%3A",
     "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A"
 ]
+
+   
     
     specific_stickers = [ 
         "Sticker: (gold)", "Sticker:  (Lenticular)",
@@ -189,8 +172,8 @@ def main():
 
     send_super_list_telegram(super_list)
 
-send_telegram_message("hi")
+send_telegram_message("bot start2")
 if __name__ == "__main__":
     while True:
         main()
-        time.sleep(60)  # Increase the delay to avoid too frequent scraping
+        time.sleep(1)
