@@ -3,9 +3,7 @@ from bs4 import BeautifulSoup
 import re
 import time
 from fake_useragent import UserAgent
-import json  # Added this import
-
-print("hi huesos")
+import json
 
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
@@ -20,8 +18,7 @@ def send_telegram_message(text):
     
     response = requests.get(url, params=payload)
     try:
-       # print(response.json()) 
-        pass 
+        pass  # Ignoring response for now
     except ValueError:
         print("Error in response")
 
@@ -67,8 +64,12 @@ def extract_data(g_rgAssets):
                     extracted_data.append(item_info)
     return extracted_data
 
-def send_super_list_telegram(super_list):
+def send_super_list_telegram(super_list, processed_ids):
     for item in super_list:
+        # If the item ID has already been processed, skip it
+        if item['id'] in processed_ids:
+            continue
+
         # Encode the market name for the URL
         market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
         market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
@@ -87,46 +88,14 @@ def send_super_list_telegram(super_list):
         )
 
         send_telegram_message(message)
+        processed_ids.add(item['id'])  # Add the ID to the processed list
         time.sleep(2)  # To prevent spamming requests
-
-
 
 def main():
     ua = UserAgent()
     urls = [
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Factory%20New%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Torque%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Factory%20New%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Tuxedo%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A"
-]
-
+        # Add your URLs here...
+    ]
     
     specific_stickers = [ 
         "Sticker: (gold)", "Sticker:  (Lenticular)",
@@ -137,6 +106,7 @@ def main():
     ]  
 
     super_list = []
+    processed_ids = set()  # Set to track processed item IDs
 
     for url in urls:
         headers = {
@@ -149,7 +119,6 @@ def main():
         g_rgAssets = extract_g_rgAssets(soup)
         if g_rgAssets:
             extracted_data = extract_data(g_rgAssets)
-            #print(f"Data extracted from {url}")
 
             for item in extracted_data:
                 for sticker_name in item['sticker_names']:
@@ -157,18 +126,14 @@ def main():
                         super_list.append(item)
                         break
 
-        else:
-            #print(f"Failed to extract g_rgAssets from {url}.")
-            pass
+        # Check if the processed_ids set exceeds 1000 items, then clear it
+        if len(processed_ids) > 1000:
+            processed_ids.clear()
 
-    print("Super list items:")
-    for item in super_list:
-        #print(item)
-        pass
+    send_super_list_telegram(super_list, processed_ids)
 
-    send_super_list_telegram(super_list)
 
-send_telegram_message("Bot Start")
+send_telegram_message("b")
 if __name__ == "__main__":
     while True:
         main()
