@@ -1,9 +1,15 @@
 import requests
-from bs4 import BeautifulSoup
-import re
+import json
+from random_user_agent.user_agent import UserAgent
+from random_user_agent.params import SoftwareName, OperatingSystem
 import time
-from fake_useragent import UserAgent
-import json  # Added this import
+from urllib.parse import quote
+
+software_names = [SoftwareName.CHROME.value, SoftwareName.FIREFOX.value]
+operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value, OperatingSystem.MAC.value]
+user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+
+id_database = []
 
 def send_telegram_message(text):
     bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
@@ -16,157 +22,169 @@ def send_telegram_message(text):
         'parse_mode': 'Markdown'
     }
     
-    response = requests.get(url, params=payload)
-    try:
-       # print(response.json()) 
-        pass 
-    except ValueError:
-        print("Error in response")
+    time.sleep(0.5)
+    requests.get(url, params=payload)
 
-def fetch_page(url, headers):
-    response = requests.get(url, headers=headers)
-    return response.text
+# List of stickers to search for
+stickers = [
+    "Team Dignitas Katowice 2014",
+    "compLexity Gaming Katowice 2014",
+    "HellRaisers Katowice 2014",
+    "Ninjas in Pyjamas Katowice 2014",
+    "Fnatic Katowice 2014",
 
-def extract_g_rgAssets(soup):
-    scripts = soup.find_all('script')
-    for script in scripts:
-        if 'g_rgAssets' in script.text:
-            match = re.search(r'g_rgAssets = (.*?);\r\n', script.text, re.DOTALL)
-            if match:
-                return json.loads(match.group(1))
-    return None
+    "Cloud9 DreamHack 2014",
+    "Team Dignitas DreamHack 2014",
+    "Fnatic DreamHack 2014",
+    "Natus Vincere DreamHack 2014",
+    "Virtus.Pro DreamHack 2014",
+    "Ninjas in Pyjamas DreamHack 2014"
 
-def extract_sticker_info(item):
-    stickers = []
-    sticker_names = []
-    for desc in item.get("descriptions", []):
-        if 'sticker_info' in desc.get("value", ""):
-            sticker_urls = re.findall(r'src="([^"]+)"', desc["value"])
-            sticker_names = re.findall(r'Sticker:\s*([^<]+)', desc["value"])
-            if sticker_names:
-                stickers = sticker_urls
-                sticker_names = sticker_names[0].split(', ')
-    return stickers, sticker_names
+    "Titan Katowice 2015",
+    "LGB eSports Katowice 2015",
+    "Flipsid3 Tactics Katowice 2015",
+    "Cloud9 G2A Katowice 2015",
+    "Counter Logic Gaming Katowice 2015",
+    "Keyd Stars Katowice 2015",
+    "3DMAX Katowice 2015",
 
-def extract_data(g_rgAssets):
-    extracted_data = []
-    if isinstance(g_rgAssets, dict):
-        for appid, contexts in g_rgAssets.items():
-            for contextid, items in contexts.items():
-                for item_id, item in items.items():
-                    item_info = {
-                        "id": item_id,
-                        "market_name": item.get("market_name", ""),
-                        "type": item.get("type", ""),
-                        "stickers": [],
-                        "sticker_names": []
-                    }
-                    item_info["stickers"], item_info["sticker_names"] = extract_sticker_info(item)
-                    extracted_data.append(item_info)
-    return extracted_data
+    "Flipsid3 Tactics Katowice 2015",
+    "Flipsid3 Tactics MLG Columbus 2016",
+    "Flipsid3 Tactics holo Cologne 2016",
+    "Flipsid3 Tactics Krakow 2017",
+    "Flipsid3 Tactics Atlanta 2017",
+    "Flipsid3 Tactics holo MLG Columbus 2016",
+    "Luminosity Gaming Cologne 2015",
+    "Luminosity Gaming holo MLG Columbus 2016",
+    "Luminosity Gaming MLG Columbus 2016",
+    "Team Liquid holo MLG Columbus 2016",
+    "Team Liquid Atlanta 2017",
+    "Team Liquid Boston 2018",
 
-def send_super_list_telegram(super_list):
-    for item in super_list:
-        # Encode the market name for the URL
-        market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
-        market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
+    "captainMo Boston 2018",
+    "somebody Boston 2018",
+    "seang@res Boston 2018",
+    "Twistzz Boston 2018",
+    "jks Boston 2018",
+    "dimasick Boston 2018",
+    "ScreaM Boston 2018",
 
-        # Create a numbered list of stickers
-        stickers_message = "\n".join(
-            [f"{i + 1}. [{name}]({url})" for i, (name, url) in enumerate(zip(item['sticker_names'], item['stickers']))]
-        ) if item['stickers'] else 'No stickers'
+    "NiKo Krakow 2017",
+    "s1mple Krakow 2017",
+    "rain Krakow 2017",
+    "MSL Krakow 2017",
+    "FalleN Krakow 2017",
+    "pashaBiceps Krakow 2017",
+    "device Krakow 2017",
+    "coldzera Krakow 2017",
+    "karrigan Krakow 2017",
+    "aizy Krakow 2017",
+    "cajunb Krakow 2017",
+    "k0nfig Krakow 2017",
+    "JW Krakow 2017",
+    "Snax Krakow 2017",
+    "Zeus Krakow 2017",
+    "olofmeister Krakow 2017",
+    "gla1ve Krakow 2017",
+    "Magisk Krakow 20170",
+    "TaZ Krakow 2017"
 
-        message = (
-            f"*Предмет*: [{item['market_name']}]({market_url})\n\n"
-            f"*Стікери:*\n{stickers_message}\n\n"
-            f"*ID*: {item['id']}\n"
-            f"*Тип*: {item['type']}\n\n"
-            f"[Швидка Покупка]({market_url})"
-        )
+    "electronic Atlanta 2017",
+    "olofmeister Atlanta 2017",
+    "s1mple Atlanta 2017",
+    "nitr0 Atlanta 2017",
+    "Pimp Atlanta 2017",
+    "B1ad3 Atlanta 2017",
+    "EliGE Atlanta 2017",
+    "jdm64 Atlanta 2017",
+    "device Atlanta 2017",
+    "Hiko Atlanta 2017",
+    "markeloff Atlanta 2017",
+    "wayLander Atlanta 2017",
+    "WorldEdit Atlanta 2017"
 
-        send_telegram_message(message)
-        time.sleep(2)  # To prevent spamming requests
+    "Group C (Foil) Cologne 2015",
+    "Group B (Foil) Cologne 2015",
 
-
-
-def main():
-    ua = UserAgent()
-    urls = [
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Check%20Engine%20%28Factory%20New%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Torque%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Cyrex%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Blood%20Tiger%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Candy%20Apple%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Factory%20New%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Tuxedo%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Galil%20AR%20%7C%20Eco%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Safety%20Net%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Well-Worn%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Converter%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Evil%20Daimyo%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Urban%20DDPAT%20%28Minimal%20Wear%29?filter=Sticker%3A"
 ]
 
-    
-    specific_stickers = [ 
-        "Sticker: (gold)", "Sticker:  (Lenticular)",
-        "| Cologne 2014", "| Katowice 2015", "| DreamHack 2014", 
-        "| Cluj-Napoca 2015", "| MLG Columbus 2016", 
-        "| Cologne 2016", "| Krakow 2017", "| Atlanta 2017", 
-        "| London 2018", "| Katowice 2019"
-    ]  
+def fetch_sticker_data():
+    global id_database
 
-    super_list = []
+    for sticker_name in stickers:
+        user_agent = user_agent_rotator.get_random_user_agent()
+        headers = {'User-Agent': user_agent}
 
-    for url in urls:
-        headers = {
-            'User-Agent': ua.random
+        payload = {
+            'query': f'"{sticker_name}"',
+            'start': '0',
+            'count': '15',
+            'search_descriptions': '1',
+            'sort_column': 'price',
+            'sort_dir': 'asc',
+            'appid': '730',
+            'norender': '1',
+            'currency': '7'
         }
-        time.sleep(1)
-        page_content = fetch_page(url, headers)
-        soup = BeautifulSoup(page_content, 'html.parser')
-        
-        g_rgAssets = extract_g_rgAssets(soup)
-        if g_rgAssets:
-            extracted_data = extract_data(g_rgAssets)
-            #print(f"Data extracted from {url}")
 
-            for item in extracted_data:
-                for sticker_name in item['sticker_names']:
-                    if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
-                        super_list.append(item)
-                        break
+        cookies = {'cookie': 'insert_the_cookies_here'}
 
-        else:
-            #print(f"Failed to extract g_rgAssets from {url}.")
-            pass
+        with requests.Session() as session:
+            response = session.get('https://steamcommunity.com/market/search/render/', params=payload, cookies=cookies, headers=headers)
 
-    print("Super list items:")
-    for item in super_list:
-        #print(item)
-        pass
+            if response.status_code == 200:
+                data = response.json()
+                for result in data.get('results', []):
+                    item_id = result['asset_description'].get('classid')
 
-    send_super_list_telegram(super_list)
+                    if item_id not in id_database:
+                        id_database.append(item_id)
+                        if len(id_database) > 10000:
+                            id_database.clear()
+                        
+                        hash_name = result.get('hash_name')
+                        sell_price_text = result.get('sell_price_text')
+                        icon_url = result['asset_description'].get('icon_url')
+                        hashname = quote(hash_name)
+                        fast_buy = f"https://steamcommunity.com/market/listings/730/{hashname}"
 
+
+                        # Extract the price from the sell_price_text
+                        price = float(result.get('sell_price', 0)) / 100  # Assuming price is in cents
+
+                        # Determine class based on price
+                        if 0 <= price < 1:
+                            item_class = "A"
+                        elif 1 <= price < 2:
+                            item_class = "B"
+                        elif 2 <= price < 5:
+                            item_class = "C"
+                        elif 5 <= price < 10:
+                            item_class = "D"
+                        elif 10 <= price < 20:
+                            item_class = "E"
+                        elif 20 <= price < 50:
+                            item_class = "F"
+                        else:
+                            item_class = "X"  # For prices above 50
+
+                        message = (
+                            f"Скін: [{hash_name}](https://community.akamai.steamstatic.com//economy//image//{icon_url})\n\n"
+                            f"Ціна з стікером: {sell_price_text}\n"
+                            f"ID: {item_id}\n"
+                            f"Клас: {item_class}\n\n"
+                            f"Стікер: [{sticker_name}]\n\n"
+                            f"[Fast Buy]({fast_buy})"
+                        )
+
+                        send_telegram_message(message)
+                        time.sleep(0.3)
+            else:
+                print(f"! {sticker_name}: {response.status_code}")
+
+print("im work")
 if __name__ == "__main__":
     while True:
-        main()
+        fetch_sticker_data()
         time.sleep(1)
+
