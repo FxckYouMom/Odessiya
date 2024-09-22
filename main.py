@@ -16,8 +16,8 @@ operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value,
 user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
 
 # Load sensitive info from environment variables
-BOT_TOKEN= '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
-CHAT_ID= '-1002452439427'
+BOT_TOKEN = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
+CHAT_ID = '-1002452439427'
 
 def send_telegram_message(text):
     url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
@@ -58,7 +58,6 @@ stickers = [
     "3DMAX Katowice 2015",
 ]
 
-
 filtered_sticker_data = {}
 
 # Load previous data
@@ -67,6 +66,8 @@ def load_previous_data(filename):
         with open(filename, 'r') as file:
             return json.load(file)
     return {}
+
+allowed_weapons = ["USP-S", "Glock-18", "P250", "M4A4", "M4A1", "AWP", "AK-47", "Galil"]
 
 def fetch_sticker_data(sticker_name, session, headers, cookies):
     payload = {
@@ -93,13 +94,21 @@ def fetch_sticker_data(sticker_name, session, headers, cookies):
 def process_data(data, sticker_name):
     filtered_data = []
     for result in data.get('results', []):
-        filtered_entry = {
-            'hash_name': result.get('hash_name'),
-            'sell_price_text': result.get('sell_price_text'),
-            'classid': result['asset_description'].get('classid'),
-            'icon_url': result['asset_description'].get('icon_url')
-        }
-        filtered_data.append(filtered_entry)
+        hash_name = result.get('hash_name')
+        sell_price_text = result.get('sell_price_text')
+
+        # Convert price text to float and check if it's below $3
+        if sell_price_text:
+            price = float(sell_price_text.replace('$', '').replace(',', '').strip())
+            # Check if the weapon is in the allowed list and price is <= 3
+            if any(weapon in hash_name for weapon in allowed_weapons) and price <= 3:
+                filtered_entry = {
+                    'hash_name': hash_name,
+                    'sell_price_text': sell_price_text,
+                    'classid': result['asset_description'].get('classid'),
+                    'icon_url': result['asset_description'].get('icon_url')
+                }
+                filtered_data.append(filtered_entry)
     
     filtered_sticker_data[sticker_name] = filtered_data
     return filtered_data
@@ -125,19 +134,12 @@ def main():
                     
                     message = f"**Стікер: [{sticker_name}]({sticker_url})**:\n\n"
                     for entry in filtered_data:
-                        # Check if the skin is new compared to the previous data
-                        is_new = sticker_name not in previous_data or \
-                                 not any(prev_entry['hash_name'] == entry['hash_name'] for prev_entry in previous_data.get(sticker_name, []))
-                        new_tag = " ** #NEW# **" if is_new else ""
-                        
                         message += (f"- [{entry['hash_name']}]("
                                     f"https://steamcommunity.com/market/listings/730/{urllib.parse.quote(entry['hash_name'])})"
-                                    f" : {entry['sell_price_text']}{new_tag}\n")
+                                    f" : {entry['sell_price_text']}\n")
                     
                     send_telegram_message(message)
                     time.sleep(2)
-                 
-         
 
     # Save the result to a file
     with open('filtered_sticker_prices.json', 'w') as json_file:
