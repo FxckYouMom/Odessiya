@@ -12,8 +12,8 @@ user_agent_rotator = UserAgent(software_names=software_names, operating_systems=
 id_database = []
 
 def send_telegram_message(text):
-    bot_token = '7670785514:AAEFcjugKWjzYuspIx2yJ7Ue9m1SwfOPz5o'
-    chat_id = '-1002452439427'
+    bot_token = '8050149415:AAEaoOu3sIQQ7hxCVpxQ0QhMYFY0hR1kby4'
+    chat_id = '-4518106299'
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     
     payload = {
@@ -25,88 +25,51 @@ def send_telegram_message(text):
     time.sleep(0.5)
     requests.get(url, params=payload)
 
-# List of stickers to search for
 stickers = [
+    "iBUYPOWER Katowice 2014",
+    "Titan Katowice 2014",
+    "Reason Gaming Katowice 2014",
+    "LGB eSports Katowice 2014",
+    "Virtus.Pro Katowice 2014",
+    "mousesports Katowice 2014",
+    "Fnatic Katowice 2014",
+    "Team LDLC.com Katowice 2014",
+    "Vox Eminor Katowice 2014",
     "Team Dignitas Katowice 2014",
+    "3DMAX Katowice 2014",
+    "Clan-Mystik Katowice 2014",
     "compLexity Gaming Katowice 2014",
     "HellRaisers Katowice 2014",
-    "Ninjas in Pyjamas Katowice 2014",
-    "Fnatic Katowice 2014",
+
+    "Team Dignitas Cologne 2014",
+    "iBUYPOWER Cologne 2014",
+    "Titan Cologne 2014",
+    "London Conspiracy Cologne 2014",
+    "Team LDLC.com Cologne 2014",
+    "Cloud9 Cologne 2014",
+    "HellRaisers Cologne 2014",
+    "ESL One Cologne 2014",
+
+    "Vox Eminor Katowice 2015",
+    "Titan Katowice 2015",
+    "LGB eSports Katowice 2015",
+    "Natus Vincere Katowice 2015",
+    "Counter Logic Gaming Katowice 2015",
+    "Keyd Stars Katowice 2015",
+    "Flipsid3 Tactics Katowice 2015",
+    "Fnatic Katowice 2015",
+    "3DMAX Katowice 2015",
 
     "Cloud9 DreamHack 2014",
     "Team Dignitas DreamHack 2014",
     "Fnatic DreamHack 2014",
-    "Natus Vincere DreamHack 2014",
-    "Virtus.Pro DreamHack 2014",
+    "Ninjas in Pyjamas DreamHack 2014",
+    "Team LDLC.com DreamHack 2014",
+    
+    "Team Dignitas DreamHack 2014",  
     "Ninjas in Pyjamas DreamHack 2014"
-
-    "Titan Katowice 2015",
-    "LGB eSports Katowice 2015",
-    "Flipsid3 Tactics Katowice 2015",
-    "Cloud9 G2A Katowice 2015",
-    "Counter Logic Gaming Katowice 2015",
-    "Keyd Stars Katowice 2015",
-    "3DMAX Katowice 2015",
-
-    "Flipsid3 Tactics Katowice 2015",
-    "Flipsid3 Tactics MLG Columbus 2016",
-    "Flipsid3 Tactics holo Cologne 2016",
-    "Flipsid3 Tactics Krakow 2017",
-    "Flipsid3 Tactics Atlanta 2017",
-    "Flipsid3 Tactics holo MLG Columbus 2016",
-    "Luminosity Gaming Cologne 2015",
-    "Luminosity Gaming holo MLG Columbus 2016",
-    "Luminosity Gaming MLG Columbus 2016",
-    "Team Liquid holo MLG Columbus 2016",
-    "Team Liquid Atlanta 2017",
-    "Team Liquid Boston 2018",
-
-    "captainMo Boston 2018",
-    "somebody Boston 2018",
-    "seang@res Boston 2018",
-    "Twistzz Boston 2018",
-    "jks Boston 2018",
-    "dimasick Boston 2018",
-    "ScreaM Boston 2018",
-
-    "NiKo Krakow 2017",
-    "s1mple Krakow 2017",
-    "rain Krakow 2017",
-    "MSL Krakow 2017",
-    "FalleN Krakow 2017",
-    "pashaBiceps Krakow 2017",
-    "device Krakow 2017",
-    "coldzera Krakow 2017",
-    "karrigan Krakow 2017",
-    "aizy Krakow 2017",
-    "cajunb Krakow 2017",
-    "k0nfig Krakow 2017",
-    "JW Krakow 2017",
-    "Snax Krakow 2017",
-    "Zeus Krakow 2017",
-    "olofmeister Krakow 2017",
-    "gla1ve Krakow 2017",
-    "Magisk Krakow 20170",
-    "TaZ Krakow 2017"
-
-    "electronic Atlanta 2017",
-    "olofmeister Atlanta 2017",
-    "s1mple Atlanta 2017",
-    "nitr0 Atlanta 2017",
-    "Pimp Atlanta 2017",
-    "B1ad3 Atlanta 2017",
-    "EliGE Atlanta 2017",
-    "jdm64 Atlanta 2017",
-    "device Atlanta 2017",
-    "Hiko Atlanta 2017",
-    "markeloff Atlanta 2017",
-    "wayLander Atlanta 2017",
-    "WorldEdit Atlanta 2017"
-
-    "Group C (Foil) Cologne 2015",
-    "Group B (Foil) Cologne 2015",
-
 ]
+
 def fetch_sticker_data():
     global id_database
 
@@ -134,7 +97,7 @@ def fetch_sticker_data():
 
         with requests.Session() as session:
             response = session.get('https://steamcommunity.com/market/search/render/', params=payload, cookies=cookies, headers=headers)
-            time.sleep(10)
+            time.sleep(8)
 
             if response.status_code == 200:
                 data = response.json()
@@ -204,5 +167,5 @@ send_telegram_message("bot start work")
 if __name__ == "__main__":
     while True:
         fetch_sticker_data()
-        time.sleep(3)
+        time.sleep(1)
 
