@@ -48,7 +48,6 @@ stickers = [
     "Team LDLC.com Cologne 2014",
     "Cloud9 Cologne 2014",
     "HellRaisers Cologne 2014",
-    "ESL One Cologne 2014",
 
     "Vox Eminor Katowice 2015",
     "Titan Katowice 2015",
