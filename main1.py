@@ -40,7 +40,6 @@ stickers = [
     "Clan-Mystik Katowice 2014",
     "compLexity Gaming Katowice 2014",
     "HellRaisers Katowice 2014",
-
     "Team Dignitas Cologne 2014",
     "iBUYPOWER Cologne 2014",
     "Titan Cologne 2014",
@@ -48,25 +47,6 @@ stickers = [
     "Team LDLC.com Cologne 2014",
     "Cloud9 Cologne 2014",
     "HellRaisers Cologne 2014",
-
-    "Vox Eminor Katowice 2015",
-    "Titan Katowice 2015",
-    "LGB eSports Katowice 2015",
-    "Natus Vincere Katowice 2015",
-    "Counter Logic Gaming Katowice 2015",
-    "Keyd Stars Katowice 2015",
-    "Flipsid3 Tactics Katowice 2015",
-    "Fnatic Katowice 2015",
-    "3DMAX Katowice 2015",
-
-    "Cloud9 DreamHack 2014",
-    "Team Dignitas DreamHack 2014",
-    "Fnatic DreamHack 2014",
-    "Ninjas in Pyjamas DreamHack 2014",
-    "Team LDLC.com DreamHack 2014",
-    
-    "Team Dignitas DreamHack 2014",  
-    "Ninjas in Pyjamas DreamHack 2014"
 ]
 
 def fetch_sticker_data():
