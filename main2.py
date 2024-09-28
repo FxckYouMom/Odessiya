@@ -35,17 +35,15 @@ stickers = [
     "Flipsid3 Tactics Katowice 2015",
     "Fnatic Katowice 2015",
     "3DMAX Katowice 2015",
-
     "Cloud9 DreamHack 2014",
     "Team Dignitas DreamHack 2014",
     "Fnatic DreamHack 2014",
     "Ninjas in Pyjamas DreamHack 2014",
     "Team LDLC.com DreamHack 2014",
-    
     "Team Dignitas DreamHack 2014",  
     "Ninjas in Pyjamas DreamHack 2014"
     "King on the Field",
-    "kennyS Cologne 2016",
+    "kennyS Cologne 2016"
 ]
 
 def fetch_sticker_data():
