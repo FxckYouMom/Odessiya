@@ -26,27 +26,28 @@ def send_telegram_message(text):
     requests.get(url, params=payload)
 
 stickers = [
-    "iBUYPOWER Katowice 2014",
-    "Titan Katowice 2014",
-    "Reason Gaming Katowice 2014",
-    "LGB eSports Katowice 2014",
-    "Virtus.Pro Katowice 2014",
-    "mousesports Katowice 2014",
-    "Fnatic Katowice 2014",
-    "Team LDLC.com Katowice 2014",
-    "Vox Eminor Katowice 2014",
-    "Team Dignitas Katowice 2014",
-    "3DMAX Katowice 2014",
-    "Clan-Mystik Katowice 2014",
-    "compLexity Gaming Katowice 2014",
-    "HellRaisers Katowice 2014",
-    "Team Dignitas Cologne 2014",
     "iBUYPOWER Cologne 2014",
     "Titan Cologne 2014",
     "London Conspiracy Cologne 2014",
     "Team LDLC.com Cologne 2014",
     "Cloud9 Cologne 2014",
     "HellRaisers Cologne 2014",
+    "Vox Eminor Katowice 2015",
+    "Titan Katowice 2015",
+    "LGB eSports Katowice 2015",
+    "Natus Vincere Katowice 2015",
+    "Counter Logic Gaming Katowice 2015",
+    "Keyd Stars Katowice 2015",
+    "Flipsid3 Tactics Katowice 2015",
+    "Fnatic Katowice 2015",
+    "3DMAX Katowice 2015",
+    "Cloud9 DreamHack 2014",
+    "Team Dignitas DreamHack 2014",
+    "Fnatic DreamHack 2014",
+    "Ninjas in Pyjamas DreamHack 2014",
+    "Team LDLC.com DreamHack 2014",
+    "Team Dignitas DreamHack 2014",  
+    "Ninjas in Pyjamas DreamHack 2014"
 ]
 
 def fetch_sticker_data():
@@ -54,7 +55,7 @@ def fetch_sticker_data():
 
     # List of allowed types and weapon names
     allowed_types = ["Mil-Spec", "Restricted", "Classified", "Covert"]
-    allowed_weapons = ["Ak-47", "P250", "Galil", "M4A4", "M4A1-S", "USP", "Glock", "Deagle", "Tec-9", "SSG08", "AWP", "MAC-10", "MP9"]
+    allowed_weapons = ["Ak-47", "P250", "Galil", "M4A4", "M4A1-S", "USP", "Glock", "Deagle", "Tec-9", "SSG08", "AWP", "MAC-10", "MP9", "Five-SeveN"]
 
     for sticker_name in stickers:
         user_agent = user_agent_rotator.get_random_user_agent()
@@ -63,7 +64,7 @@ def fetch_sticker_data():
         payload = {
             'query': f'"{sticker_name}"',
             'start': '0',
-            'count': '15',
+            'count': '10',
             'search_descriptions': '1',
             'sort_column': 'price',
             'sort_dir': 'asc',
