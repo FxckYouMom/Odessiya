@@ -26,34 +26,20 @@ def send_telegram_message(text):
     requests.get(url, params=payload)
 
 stickers = [
-    "Team Dignitas Cologne 2016",
-    "OpTic Gaming Cologne 2016",
-    "Flipsid3 Tactics Cologne 2016",
-    "mousesports Cologne 2016",
-    "FaZe Clan Cologne 2016",
-    "Team EnVyUs Cologne 2016",
-    "Team Liquid MLG Columbus 2016",
-    "Counter Logic Gaming MLG Columbus 2016",
-    "Cloud9 MLG Columbus 2016",
-    "Flipsid3 Tactics MLG Columbus 2016",
-    "Splyce MLG Columbus 2016",
-    "mousesports MLG Columbus 2016",
-    "G2 Esports MLG Columbus 2016",
-    "Team Liquid Atlanta 2017",
-    "Flipsid3 Tactics Atlanta 2017",
-    "Fnatic Atlanta 2017",
-    "Natus Vincere Atlanta 2017",
-    "SK Gaming Atlanta 2017",
-    "Virtus.Pro Atlanta 2017",
-    "Astralis Atlanta 2017",
-    "Gambit Gaming Atlanta 2017",
-    "Cloud9 Boston 2018",
-    "FaZe Clan Boston 2018",
-    "Sprout Esports Boston 2018",
-    "Flipsid3 Tactics Boston 2018",
-    "mousesports Boston 2018",
-    "Vega Squadron Boston 2018",
-    "Natus Vincere Boston 2018"
+    "Sticker Team Liquid Atlanta 2017",
+    "Sticker Flipsid3 Tactics Atlanta 2017",
+    "Sticker Natus Vincere Atlanta 2017",
+    "Sticker Astralis Atlanta 2017",
+    "Sticker Luminosity Gaming",
+    "Sticker Team EnVyUs",
+    "Sticker Titan Cluj-Napoca 2015",
+    "Sticker Team Dignitas Cluj-Napoca 2015",
+    "Sticker Counter Logic Gaming MLG Columbus 2016",
+    "Sticker Flipsid3 Tactics MLG Columbus 2016",
+    "Sticker Team Dignitas Cologne 2016",
+    "Sticker OpTic Gaming Cologne 2016",
+    "Sticker Flipsid3 Tactics Cologne 2016",
+    "Sticker Team EnVyUs Cologne 2016"
 ]
 
 def fetch_sticker_data():
