@@ -12,8 +12,8 @@ user_agent_rotator = UserAgent(software_names=software_names, operating_systems=
 id_database = []
 
 def send_telegram_message(text):
-    bot_token = '7756476851:AAF_3SELmOPrv7PIhKbVxCzi5bzCEv8mQps'
-    chat_id = '-4501309542'
+    bot_token = '8050149415:AAEaoOu3sIQQ7hxCVpxQ0QhMYFY0hR1kby4'
+    chat_id = '-4518106299'
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     
     payload = {
@@ -26,24 +26,21 @@ def send_telegram_message(text):
     requests.get(url, params=payload)
 
 stickers = [
-    "Vox Eminor Katowice 2015",
-    "Titan Katowice 2015",
-    "LGB eSports Katowice 2015",
-    "Natus Vincere Katowice 2015",
-    "Counter Logic Gaming Katowice 2015",
-    "Keyd Stars Katowice 2015",
-    "Flipsid3 Tactics Katowice 2015",
-    "Fnatic Katowice 2015",
-    "3DMAX Katowice 2015",
-    "Cloud9 DreamHack 2014",
-    "Team Dignitas DreamHack 2014",
-    "Fnatic DreamHack 2014",
-    "Ninjas in Pyjamas DreamHack 2014",
-    "Team LDLC.com DreamHack 2014",
-    "Team Dignitas DreamHack 2014",  
-    "Ninjas in Pyjamas DreamHack 2014"
-    "King on the Field",
-    "kennyS Cologne 2016"
+    "Sticker Team Liquid Atlanta 2017",
+    "Sticker Flipsid3 Tactics Atlanta 2017",
+    "Sticker Natus Vincere Atlanta 2017",
+    "Sticker Astralis Atlanta 2017",
+    "Sticker Luminosity Gaming",
+    "Sticker Team EnVyUs",
+    "Sticker Titan Cluj-Napoca 2015",
+    "Sticker Team Dignitas Cluj-Napoca 2015",
+    "Sticker Counter Logic Gaming MLG Columbus 2016",
+    "Sticker Flipsid3 Tactics MLG Columbus 2016",
+    "Sticker Team Dignitas Cologne 2016",
+    "Sticker OpTic Gaming Cologne 2016",
+    "Sticker Flipsid3 Tactics Cologne 2016",
+    "Sticker Team EnVyUs Cologne 2016"
+    
 ]
 
 def fetch_sticker_data():
@@ -51,7 +48,7 @@ def fetch_sticker_data():
 
     # List of allowed types and weapon names
     allowed_types = ["Mil-Spec", "Restricted", "Classified", "Covert"]
-    allowed_weapons = ["Ak-47", "P250", "Galil", "M4A4", "M4A1-S", "USP", "Glock", "Deagle", "Tec-9", "SSG08", "AWP", "MAC-10", "MP9", "CZ75-Auto"]
+    allowed_weapons = ["Ak-47", "P250", "Galil", "M4A4", "M4A1-S", "USP", "Glock", "Deagle", "Tec-9", "SSG08", "AWP", "MAC-10", "MP9", "Five-SeveN"]
 
     for sticker_name in stickers:
         user_agent = user_agent_rotator.get_random_user_agent()
@@ -60,7 +57,7 @@ def fetch_sticker_data():
         payload = {
             'query': f'"{sticker_name}"',
             'start': '0',
-            'count': '15',
+            'count': '10',
             'search_descriptions': '1',
             'sort_column': 'price',
             'sort_dir': 'asc',
