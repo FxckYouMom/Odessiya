@@ -66,28 +66,38 @@ def extract_data(g_rgAssets):
     return extracted_data
 
 def send_super_list_telegram(super_list):
+    sent_ids = []  # Список для хранения уже отправленных id
+
     for item in super_list:
+        # Проверка, был ли уже отправлен этот id
+        if item['id'] in sent_ids:
+            continue  # Пропускаем элемент, если id уже был отправлен
+
         # Encode the market name for the URL
         market_name_encoded = item['market_name'].replace(' ', '%20').replace('(', '%28').replace(')', '%29')
         market_url = f"https://steamcommunity.com/market/listings/730/{market_name_encoded}"
-        time.sleep(5)
-        # Create a numbered list of stickers
+
+        # Создаем список стикеров для сообщения
         stickers_message = "\n".join(
             [f"{i + 1}. [{name}]({url})" for i, (name, url) in enumerate(zip(item['sticker_names'], item['stickers']))]
         ) if item['stickers'] else 'No stickers'
 
+        # Формируем сообщение для Telegram
         message = (
             f"*Предмет*: [{item['market_name']}]({market_url})\n\n"
-            f"*Стікери:*\n{stickers_message}\n\n"
+            f"*Стикери:*\n{stickers_message}\n\n"
             f"*ID*: {item['id']}\n"
             f"*Тип*: {item['type']}\n\n"
             f"[Швидка Покупка]({market_url})"
         )
 
+        # Отправляем сообщение в Telegram
         send_telegram_message(message)
-        time.sleep(2)  # To prevent spamming requests
 
+        # Добавляем id в список отправленных
+        sent_ids.append(item['id'])
 
+        time.sleep(2)  # Задержка, чтобы не спамить запросы
 
 def main():
     ua = UserAgent()
@@ -112,7 +122,6 @@ def main():
     ]  
 
     super_list = []
-    processed_ids = set()  # Множество для хранения уникальных id
 
     for url in urls:
         headers = {
@@ -127,18 +136,10 @@ def main():
             extracted_data = extract_data(g_rgAssets)
 
             for item in extracted_data:
-                # Проверяем, был ли уже добавлен элемент с таким id
-                if item['id'] not in processed_ids:
-                    for sticker_name in item['sticker_names']:
-                        if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
-                            super_list.append(item)
-                            processed_ids.add(item['id'])  # Добавляем id в множество, чтобы избежать повторов
-                            break
-
-    print("Super list items:")
-    for item in super_list:
-        # Вывод или обработка элементов
-        pass
+                for sticker_name in item['sticker_names']:
+                    if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
+                        super_list.append(item)
+                        break
 
     send_super_list_telegram(super_list)
 
