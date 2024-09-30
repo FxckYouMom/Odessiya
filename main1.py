@@ -92,27 +92,27 @@ def send_super_list_telegram(super_list):
 def main():
     ua = UserAgent()
     urls = [
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Blue%20Fissure%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Blue%20Fissure%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Factory%20New%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Battle-Scarred%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Torque%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AWP%20%7C%20Acheron%20%28Field-Tested%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/AWP%20%7C%20Acheron%20%28Minimal%20Wear%29?filter=Sticker%3A",
-    "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Field-Tested%29?filter=Sticker%3A"
-]
+        "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Blue%20Fissure%20%28Field-Tested%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Blue%20Fissure%20%28Battle-Scarred%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/P250%20%7C%20Metallic%20DDPAT%20%28Factory%20New%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Battle-Scarred%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Emerald%20Pinstripe%20%28Field-Tested%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Torque%20%28Minimal%20Wear%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/AWP%20%7C%20Acheron%20%28Field-Tested%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/AWP%20%7C%20Acheron%20%28Minimal%20Wear%29?filter=Sticker%3A",
+        "https://steamcommunity.com/market/listings/730/M4A1-S%20%7C%20Nitro%20%28Field-Tested%29?filter=Sticker%3A"
+    ]
 
-    
     specific_stickers = [ 
         "2014",
         "2015",
         "2016",
         "2017",
-        "2018"
+        "2018",
     ]  
 
     super_list = []
+    processed_ids = set()  # Множество для хранения уникальных id
 
     for url in urls:
         headers = {
@@ -125,21 +125,19 @@ def main():
         g_rgAssets = extract_g_rgAssets(soup)
         if g_rgAssets:
             extracted_data = extract_data(g_rgAssets)
-            #print(f"Data extracted from {url}")
 
             for item in extracted_data:
-                for sticker_name in item['sticker_names']:
-                    if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
-                        super_list.append(item)
-                        break
-
-        else:
-            #print(f"Failed to extract g_rgAssets from {url}.")
-            pass
+                # Проверяем, был ли уже добавлен элемент с таким id
+                if item['id'] not in processed_ids:
+                    for sticker_name in item['sticker_names']:
+                        if any(re.search(re.escape(sticker), sticker_name, re.IGNORECASE) for sticker in specific_stickers):
+                            super_list.append(item)
+                            processed_ids.add(item['id'])  # Добавляем id в множество, чтобы избежать повторов
+                            break
 
     print("Super list items:")
     for item in super_list:
-        #print(item)
+        # Вывод или обработка элементов
         pass
 
     send_super_list_telegram(super_list)
