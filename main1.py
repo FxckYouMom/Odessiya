@@ -65,8 +65,11 @@ def extract_data(g_rgAssets):
                     extracted_data.append(item_info)
     return extracted_data
 
+# Создаем глобальный список для хранения уже отправленных id
+sent_ids = []  
+
 def send_super_list_telegram(super_list):
-    sent_ids = []  # Список для хранения уже отправленных id
+    global sent_ids  # Используем глобальный список
 
     for item in super_list:
         # Проверка, был ли уже отправлен этот id
@@ -94,7 +97,7 @@ def send_super_list_telegram(super_list):
         # Отправляем сообщение в Telegram
         send_telegram_message(message)
 
-        # Добавляем id в список отправленных
+        # Добавляем id в глобальный список отправленных
         sent_ids.append(item['id'])
 
         time.sleep(2)  # Задержка, чтобы не спамить запросы
